@@ -4,10 +4,10 @@ define([
 	'../SimpleQuery'
 ], function (declare, arrayEngine, SimpleQuery) {
 	return declare(SimpleQuery, {
-		_createFilterQuerier: function (filter) {
+		_createFilterQuerier: function _createFilterQuerier(filter) {
 			return filter.type === 'string'
 				? arrayEngine.query(filter.args[0])
-				: this.inherited(arguments);
+				: this.inherited(_createFilterQuerier, arguments);
 		}
 	});
 });

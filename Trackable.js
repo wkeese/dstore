@@ -93,9 +93,9 @@ define([
 			}
 
 			function makeFetch() {
-				return function () {
+				return function caller() {
 					var self = this;
-					var fetchResults = this.inherited(arguments);
+					var fetchResults = this.inherited(caller, arguments);
 					when(fetchResults, function (results) {
 						results = self._results = results.slice();
 						if (self._partialResults) {
@@ -109,11 +109,11 @@ define([
 				};
 			}
 			function makeFetchRange() {
-				return function (kwArgs) {
+				return function caller(kwArgs) {
 					var self = this,
 						start = kwArgs.start,
 						end = kwArgs.end,
-						fetchResults = this.inherited(arguments);
+						fetchResults = this.inherited(caller, arguments);
 					// only use this if we don't have all the data
 					if (!this._results) {
 						when(fetchResults, function (results) {

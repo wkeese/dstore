@@ -185,8 +185,8 @@ define([
 					{id: 1, name: 'one', prime: false},
 					{id: 2, name: 'two', even: true, prime: true}
 				],
-				getIdentity: function () {
-					return 'id-' + this.inherited(arguments);
+				getIdentity: function getIdentity() {
+					return 'id-' + this.inherited(getIdentity, arguments);
 				},
 				newMethod: function () {
 					return 'hello';
@@ -460,9 +460,9 @@ define([
 				constructor: function () {
 					this.data = expectedData;
 				},
-				setData: function (data) {
+				setData: function setData(data) {
 					this.actualData = data;
-					this.inherited(arguments);
+					this.inherited(setData, arguments);
 				}
 			});
 

@@ -22,16 +22,16 @@ function(declare, Memory) {
 			}
 			this.setData(data);
 		},
-		putSync: function (object) {
+		putSync: function putSync(object) {
 			// addSync and all the async update methods eventually go through this
-			var result = this.inherited(arguments);
+			var result = this.inherited(putSync, arguments);
 			// prefix and store
 			localStorage.setItem(this.prefix + this.getIdentity(object), JSON.stringify(object));
 			return result;
 		},
-		removeSync: function (id) {
+		removeSync: function removeSync(id) {
 			localStorage.removeItem(this.prefix + id);
-			return this.inherited(arguments);
+			return this.inherited(removeSync, arguments);
 		}
 	});
 });

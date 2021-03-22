@@ -153,12 +153,12 @@ define([
 			};
 		},
 
-		_getFilterComparator: function (type) {
+		_getFilterComparator: function _getFilterComparator(type) {
 			// summary:
 			//		Get the comparator for the specified type
 			// returns: Function?
 
-			return comparators[type] || this.inherited(arguments);
+			return comparators[type] || this.inherited(_getFilterComparator, arguments);
 		},
 
 		_createSelectQuerier: function (properties) {

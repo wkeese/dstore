@@ -45,9 +45,9 @@ define([
 			);
 
 			arrayUtil.forEach(['filter', 'sort'], function (method) {
-				proto[method] = function () {
+				proto[method] = function caller() {
 					var newBackingStore = this.backingMemoryStore[method].apply(this.backingMemoryStore, arguments);
-					return lang.mixin(this.inherited(arguments), {
+					return lang.mixin(this.inherited(caller, arguments), {
 						backingMemoryStore: newBackingStore
 					});
 				};
@@ -74,9 +74,9 @@ define([
 				data: createData(numItems),
 
 				// Make backing store an observed collection so its data is kept up-to-date
-				track: function () {
+				track: function track() {
 					this.backingMemoryStore = this.backingMemoryStore.track();
-					return this.inherited(arguments);
+					return this.inherited(track, arguments);
 				}
 			}, PartialDataStore);
 		}
@@ -541,7 +541,7 @@ define([
 
 			'new item - with options.beforeId and no queryExecutor': function () {
 				var store = createPrimeNumberStore(),
-					collection = store.track();	
+					collection = store.track();
 				collection.fetchSync();
 				var data = collection._results;
 

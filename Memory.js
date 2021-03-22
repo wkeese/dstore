@@ -22,8 +22,8 @@ define([
 			this.storage.version = 0;
 		},
 
-		postscript: function () {
-			this.inherited(arguments);
+		postscript: function postscript() {
+			this.inherited(postscript, arguments);
 
 			// Set the data in `postscript` so subclasses can override `data` in their constructors
 			// (e.g., a LocalStorage store that retrieves its data from localStorage)
@@ -246,8 +246,8 @@ define([
 			});
 		},
 
-		_includePropertyInSubCollection: function (name) {
-			return name !== 'data' && this.inherited(arguments);
+		_includePropertyInSubCollection: function _includePropertyInSubCollection(name) {
+			return name !== 'data' && this.inherited(_includePropertyInSubCollection, arguments);
 		}
 	});
 });

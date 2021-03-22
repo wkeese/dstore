@@ -16,14 +16,14 @@ define([
 	/* jshint newcap: false */
 	var masterFetchCalled;
 	var Master = declare(Memory, {
-		fetch: function () {
+		fetch: function fetch() {
 			masterFetchCalled = true;
-			return this.inherited(arguments);
+			return this.inherited(fetch, arguments);
 		}
 	});
 	function makeDeferred(){
-		return function () {
-			var result = this.inherited(arguments);
+		return function caller() {
+			var result = this.inherited(caller, arguments);
 			var deferred = new Deferred();
 			setTimeout(function () {
 				// Dojo's deferred resolve doesn't properly defer promises

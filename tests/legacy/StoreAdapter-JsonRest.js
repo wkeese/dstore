@@ -14,8 +14,8 @@ define([
 
 	var legacyStore = new JsonRest({
 		target: require.toUrl('dstore/tests/x.y').match(/(.+)x\.y$/)[1],
-		remove: function () {
-			var result = this.inherited(arguments);
+		remove: function remove() {
+			var result = this.inherited(remove, arguments);
 			return result.then(function (response) {
 				return response && JSON.parse(response);
 			});
@@ -32,8 +32,8 @@ define([
 	var	store  = new StoreAdapter({
 		objectStore: new JsonRest({
 			target: require.toUrl('dstore/tests/x.y').match(/(.+)x\.y$/)[1],
-			remove: function () {
-				var result = this.inherited(arguments);
+			remove: function remove() {
+				var result = this.inherited(remove, arguments);
 				return result.then(function (response) {
 					return response && JSON.parse(response);
 				});

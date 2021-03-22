@@ -14,8 +14,8 @@ define([
 
 	function cachingQuery(type) {
 		// ensure querying creates a parallel caching store query
-		return function () {
-			var subCollection = this.inherited(arguments);
+		return function caller() {
+			var subCollection = this.inherited(caller, arguments);
 			var cachingCollection = this.cachingCollection || this.cachingStore;
 			subCollection.cachingCollection = cachingCollection[type].apply(cachingCollection, arguments);
 			subCollection.isValidFetchCache = this.canCacheQuery === true || this.canCacheQuery(type, arguments);
@@ -48,13 +48,13 @@ define([
 			return (this.isValidFetchCache && (this.allLoaded || this.fetchRequest)) ||
 					this._parent && this._parent.isAvailableInCache();
 		},
-		fetch: function () {
-			return this._fetch(arguments);
+		fetch: function fetch() {
+			return this._fetch(fetch, arguments);
 		},
-		fetchRange: function () {
-			return this._fetch(arguments, true);
+		fetchRange: function fetchRange() {
+			return this._fetch(fetchRange, arguments, true);
 		},
-		_fetch: function (args, isRange) {
+		_fetch: function (caller, args, isRange) {
 			// if the data is available in the cache (via any parent), we use fetch from the caching store
 			var cachingStore = this.cachingStore;
 			var cachingCollection = this.cachingCollection || cachingStore;
@@ -69,11 +69,11 @@ define([
 							cachingCollection.fetchRange(args[0]) :
 							cachingCollection.fetch();
 					} else {
-						return store.inherited(args);
+						return store.inherited(caller, args);
 					}
 				}));
 			}
-			var results = this.fetchRequest = this.inherited(args);
+			var results = this.fetchRequest = this.inherited(caller, args);
 			when(results, function (results) {
 				var allLoaded = !isRange;
 				store.fetchRequest = null;
@@ -134,9 +134,9 @@ define([
 				});
 			});
 		},
-		add: function (object, directives) {
+		add: function add(object, directives) {
 			var cachingStore = this.cachingStore;
-			return when(this.inherited(arguments), function (result) {
+			return when(this.inherited(add, arguments), function (result) {
 				// now put result in cache (note we don't do add, because add may have
 				// called put() and already added it)
 				var cachedPutResult =
@@ -146,12 +146,12 @@ define([
 				return result || cachedPutResult;
 			});
 		},
-		put: function (object, directives) {
+		put: function put(object, directives) {
 			// first update the cache, we are going to assume the update is valid while we wait to
 			// hear from the master store
 			var cachingStore = this.cachingStore;
 			cachingStore.put(object, directives);
-			return when(this.inherited(arguments)).then(function (result) {
+			return when(this.inherited(put, arguments)).then(function (result) {
 				// now put result in cache
 				var cachedPutResult =
 					cachingStore.put(result && typeof result === 'object' ? result : object, directives);
@@ -162,14 +162,14 @@ define([
 				// Assuming a rejection of a promise invalidates the local cache
 				cachingStore.remove((directives && directives.id) || cachingStore.getIdentity(object));
 				if(exception) {
-					throw exception;	
+					throw exception;
 				}
 				throw new Error("Failed to put() object to master-store");
 			});
 		},
-		remove: function (id, directives) {
+		remove: function remove(id, directives) {
 			var cachingStore = this.cachingStore;
-			return when(this.inherited(arguments), function (result) {
+			return when(this.inherited(remove, arguments), function (result) {
 				return when(cachingStore.remove(id, directives), function () {
 					return result;
 				});
@@ -188,8 +188,8 @@ define([
 			//		future fetches
 			this.allLoaded = false;
 		},
-		_createSubCollection: function () {
-			var subCollection = this.inherited(arguments);
+		_createSubCollection: function _createSubCollection() {
+			var subCollection = this.inherited(_createSubCollection, arguments);
 			subCollection._parent = this;
 			return subCollection;
 		},
@@ -198,9 +198,10 @@ define([
 		filter: cachingQuery('filter'),
 		select: cachingQuery('select'),
 
-		_getQuerierFactory: function (type) {
+		_getQuerierFactory: function _getQuerierFactory(type) {
 			var cachingStore = this.cachingStore;
-			return this.inherited(arguments) || lang.hitch(cachingStore, cachingStore._getQuerierFactory(type));
+			return this.inherited(_getQuerierFactory, arguments) ||
+				lang.hitch(cachingStore, cachingStore._getQuerierFactory(type));
 		}
 	};
 	var Cache = declare(null, CachePrototype);

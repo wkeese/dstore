@@ -12,8 +12,8 @@ define([
 
 		isValidFetchCache: true,
 
-		postscript: function () {
-			this.inherited(arguments);
+		postscript: function postscript() {
+			this.inherited(postscript, arguments);
 			this.fetch();
 		},
 
